@@ -1,5 +1,5 @@
 // swift-tools-version:5.9
-// Generated for StreamX DVR 0.1.12; binary and bindings are released together.
+// Generated for StreamX DVR 0.1.13; binary and bindings are released together.
 import PackageDescription
 
 let package = Package(
@@ -9,8 +9,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "StreamXPairingFFI",
-            url: "https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.12/StreamXPairing.xcframework.zip",
-            checksum: "661f841de14192475c092fa554084dec114f741e8e452019aaaf66e05d965929"
+            url: "https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.13/StreamXPairing.xcframework.zip",
+            checksum: "b1701306c464d9c14724124a2a891de1de758a6a9395c38af5e3ce1787e13dbe"
         ),
         .target(name: "StreamXPairing", dependencies: ["StreamXPairingFFI"], sources: ["StreamXPairing.swift"]),
     ]
