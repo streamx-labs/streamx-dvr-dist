@@ -9,6 +9,9 @@ RUN apt-get update \
     && mkdir /data /recordings \
     && chown 1000:1000 /data /recordings
 COPY docker/streamx-dvr-${TARGETARCH} /usr/local/bin/streamx-dvr
+# Static Comskip from the Linux release archive, found beside the server.
+COPY docker/comskip-${TARGETARCH} /usr/local/bin/comskip
+COPY docker/COMSKIP-LICENSE.txt /usr/share/doc/comskip/COPYING
 ENV DATA_DIR=/data RECORDINGS_DIR=/recordings STREAMX_DVR_CONTAINER=1
 VOLUME ["/data", "/recordings"]
 EXPOSE 8181

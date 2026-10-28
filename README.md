@@ -29,16 +29,16 @@ Run it on a Mac, a Windows PC, a Linux server, a NAS or a Raspberry Pi. Everythi
 ## Downloads
 
 <!-- release-downloads:start -->
-Latest release: **[0.1.16](https://github.com/streamx-labs/streamx-dvr-dist/releases/tag/v0.1.16)**
+Latest release: **[0.1.17](https://github.com/streamx-labs/streamx-dvr-dist/releases/tag/v0.1.17)**
 
 | Platform | Desktop app / installer | Headless server |
 |---|---|---|
-| macOS (Apple Silicon) | [StreamX DVR.dmg](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.16/streamx-dvr-companion_0.1.16_darwin-aarch64.dmg) | [streamx-dvr_0.1.16_darwin-aarch64.tar.gz](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.16/streamx-dvr_0.1.16_darwin-aarch64.tar.gz) |
-| Windows (x64) | [Installer (.exe)](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.16/streamx-dvr-companion_0.1.16_windows-x86_64-setup.exe) | [streamx-dvr_0.1.16_windows-x86_64.zip](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.16/streamx-dvr_0.1.16_windows-x86_64.zip) |
-| Linux (x64) | [setup.sh](#linux-systemd) | [streamx-dvr_0.1.16_linux-x86_64.tar.gz](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.16/streamx-dvr_0.1.16_linux-x86_64.tar.gz) |
-| Linux (arm64, Raspberry Pi) | [setup.sh](#linux-systemd) | [streamx-dvr_0.1.16_linux-aarch64.tar.gz](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.16/streamx-dvr_0.1.16_linux-aarch64.tar.gz) |
+| macOS (Apple Silicon) | [StreamX DVR.dmg](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.17/streamx-dvr-companion_0.1.17_darwin-aarch64.dmg) | [streamx-dvr_0.1.17_darwin-aarch64.tar.gz](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.17/streamx-dvr_0.1.17_darwin-aarch64.tar.gz) |
+| Windows (x64) | [Installer (.exe)](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.17/streamx-dvr-companion_0.1.17_windows-x86_64-setup.exe) | [streamx-dvr_0.1.17_windows-x86_64.zip](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.17/streamx-dvr_0.1.17_windows-x86_64.zip) |
+| Linux (x64) | [setup.sh](#linux-systemd) | [streamx-dvr_0.1.17_linux-x86_64.tar.gz](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.17/streamx-dvr_0.1.17_linux-x86_64.tar.gz) |
+| Linux (arm64, Raspberry Pi) | [setup.sh](#linux-systemd) | [streamx-dvr_0.1.17_linux-aarch64.tar.gz](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.17/streamx-dvr_0.1.17_linux-aarch64.tar.gz) |
 
-Docker: `ghcr.io/streamx-labs/streamx-dvr:0.1.16` · Checksums: [SHA256SUMS](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.16/SHA256SUMS)
+Docker: `ghcr.io/streamx-labs/streamx-dvr:0.1.17` · Checksums: [SHA256SUMS](https://github.com/streamx-labs/streamx-dvr-dist/releases/download/v0.1.17/SHA256SUMS)
 <!-- release-downloads:end -->
 
 All files, including previous versions, are on the [Releases](https://github.com/streamx-labs/streamx-dvr-dist/releases) page.
@@ -196,7 +196,7 @@ This repository is also the Swift package `StreamXPairing` (iOS 15 and tvOS 15, 
 
 <!-- release-spm:start -->
 ```swift
-.package(url: "https://github.com/streamx-labs/streamx-dvr-dist.git", from: "0.1.16")
+.package(url: "https://github.com/streamx-labs/streamx-dvr-dist.git", from: "0.1.17")
 ```
 <!-- release-spm:end -->
 
