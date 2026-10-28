@@ -77,6 +77,6 @@ jobs:
           img="ghcr.io/streamx-labs/streamx-dvr:${VERSION}"
           docker pull "$img"
           [ "$(docker run --rm "$img" --version)" = "streamx-dvr ${VERSION}" ]
-          docker run --rm --entrypoint comskip "$img" --version | grep -q '^Comskip '
+          docker run --rm --entrypoint comskip "$img" --version 2>&1 | grep -q '^Comskip '
           major="$(docker run --rm --entrypoint ffmpeg "$img" -version | sed -n '1s/^ffmpeg version [nN]\{0,1\}\([0-9]*\).*/\1/p')"
           [ "${major:-0}" -ge 7 ]
