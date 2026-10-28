@@ -102,7 +102,7 @@ The script verifies the release checksum, creates a `streamx-dvr` system user, i
 
 ## Docker
 
-Multi-arch image for `linux/amd64` and `linux/arm64`, with FFmpeg 7.1, running as uid/gid 1000.
+Multi-arch image for `linux/amd64` and `linux/arm64`, with FFmpeg 7.1 and Comskip, running as uid/gid 1000.
 
 ```bash
 docker run -d --name streamx-dvr --restart unless-stopped --network host \
@@ -130,12 +130,12 @@ services:
 - **Pairing code**: `docker exec -it streamx-dvr streamx-dvr pair`.
 - **Updates**: pull a newer tag and recreate the container (`docker compose pull && docker compose up -d`). The container never updates itself.
 - **Tags**: `latest`, `<major>.<minor>` (for example `0.1`) and the exact version (for example `0.1.13`).
-- Commercial detection is not available in the image (Comskip is not included).
+- **Commercial detection** works as in the desktop apps: the image includes Comskip (from 0.1.17).
 
 ## Headless server
 
 1. Download and extract the archive for your platform.
-2. Install FFmpeg and ffprobe 7 or newer and put them on `PATH` (or pass `--ffmpeg-path`). For commercial detection, also put Comskip on `PATH`.
+2. Install FFmpeg and ffprobe 7 or newer and put them on `PATH` (or pass `--ffmpeg-path`). Linux archives include Comskip for commercial detection (keep it next to `streamx-dvr`); on macOS and Windows, put Comskip on `PATH`.
 3. Start the server:
 
 ```bash
@@ -164,6 +164,25 @@ shasum -a 256 --ignore-missing -c SHA256SUMS  # macOS
 ```
 
 Desktop app updates and the Linux self-update are also verified against a signing key built into the app before they install.
+
+### Verify a signature
+
+The Linux server archives and the desktop updates come with a `.sig` file, signed with [minisign](https://jedisct1.github.io/minisign/). The public key is published with every release (from 0.1.17) at <https://github.com/streamx-labs/streamx-dvr-dist/releases/latest/download/minisign.pub>:
+
+```
+untrusted comment: minisign public key: 5ED5F4DBEE1BE44C
+RWRM5Bvu2/TVXn1arudYG9hQFtdy6duWZPQ3ApNv2qBS8KgKW2w3bTTF
+```
+
+Each `.sig` file is the minisign signature encoded in base64: decode it, then verify.
+
+```bash
+f=streamx-dvr_<version>_linux-x86_64.tar.gz
+base64 -d "$f.sig" > "$f.minisig"
+minisign -Vm "$f" -x "$f.minisig" -P RWRM5Bvu2/TVXn1arudYG9hQFtdy6duWZPQ3ApNv2qBS8KgKW2w3bTTF
+```
+
+A valid signature prints `Signature and comment signature verified`; its trusted comment contains `file:<archive name>`, which binds the signature to that exact file.
 
 ## Security and privacy
 

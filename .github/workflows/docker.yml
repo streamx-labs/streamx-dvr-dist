@@ -44,8 +44,9 @@ jobs:
           mkdir -p ctx/docker
           cp Dockerfile ctx/
           for pair in amd64:x86_64 arm64:aarch64; do
-            tar -xzf "dl/streamx-dvr_${version}_linux-${pair#*:}.tar.gz" -C ctx/docker streamx-dvr
+            tar -xzf "dl/streamx-dvr_${version}_linux-${pair#*:}.tar.gz" -C ctx/docker streamx-dvr comskip COMSKIP-LICENSE.txt
             mv ctx/docker/streamx-dvr "ctx/docker/streamx-dvr-${pair%:*}"
+            mv ctx/docker/comskip "ctx/docker/comskip-${pair%:*}"
           done
           echo "VERSION=$version" >> "$GITHUB_ENV"
           echo "MINOR=${version%.*}" >> "$GITHUB_ENV"
@@ -76,5 +77,6 @@ jobs:
           img="ghcr.io/streamx-labs/streamx-dvr:${VERSION}"
           docker pull "$img"
           [ "$(docker run --rm "$img" --version)" = "streamx-dvr ${VERSION}" ]
+          docker run --rm --entrypoint comskip "$img" --version | grep -q '^Comskip '
           major="$(docker run --rm --entrypoint ffmpeg "$img" -version | sed -n '1s/^ffmpeg version [nN]\{0,1\}\([0-9]*\).*/\1/p')"
           [ "${major:-0}" -ge 7 ]
