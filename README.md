@@ -175,9 +175,11 @@ Desktop app updates and the Linux self-update are also verified against a signin
 
 This repository is also the Swift package `StreamXPairing` (iOS 15 and tvOS 15, arm64), used by the StreamX app to pair with and sign requests for a StreamX DVR server.
 
+<!-- release-spm:start -->
 ```swift
-.package(url: "https://github.com/streamx-labs/streamx-dvr-dist.git", from: "0.1.0")
+.package(url: "https://github.com/streamx-labs/streamx-dvr-dist.git", from: "0.1.13")
 ```
+<!-- release-spm:end -->
 
 Add the `StreamXPairing` product to your target. Package versions follow the server releases.
 
