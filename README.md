@@ -75,13 +75,26 @@ From the menu-bar or tray icon: server status, **Open Web Admin…**, **Pair a D
 
 ## Linux (systemd)
 
-For 64-bit x86 or ARM hosts with systemd and FFmpeg/ffprobe 7 or newer from the system packages:
+For 64-bit x86 or ARM hosts with systemd.
 
-```bash
-curl -fsSL https://github.com/streamx-labs/streamx-dvr-dist/releases/latest/download/setup.sh | sudo bash
-```
+1. **Install FFmpeg 7 or newer first.** The script does not install it and stops if `ffmpeg` or `ffprobe` is missing or older than version 7:
 
-The script verifies the release checksum, creates a `streamx-dvr` system user, installs the server in `/opt/streamx-dvr/` (data in `data/`, recordings in `recordings/`), asks for an admin password, and starts the `streamx-dvr` service on port 8181. Logs: `journalctl -u streamx-dvr`.
+   ```bash
+   sudo apt update && sudo apt install -y ffmpeg
+   ffmpeg -version | head -n 1      # must show version 7 or newer
+   ```
+
+   Debian 13, Ubuntu 25.04 or later and Raspberry Pi OS trixie (64-bit) ship FFmpeg 7. Ubuntu 24.04, Debian 12 and Raspberry Pi OS bookworm ship an older version: use the [Docker image](#docker) instead, or put static FFmpeg and ffprobe 7 builds on `PATH`.
+
+2. **Run the installer:**
+
+   ```bash
+   curl -fsSL https://github.com/streamx-labs/streamx-dvr-dist/releases/latest/download/setup.sh | sudo bash
+   ```
+
+   On a first install it asks for a password for the StreamX DVR web admin. This is not a Linux account password: no system user is changed.
+
+The script verifies the release checksum, creates a `streamx-dvr` system user, installs the server in `/opt/streamx-dvr/` (data in `data/`, recordings in `recordings/`), and starts the `streamx-dvr` service on port 8181. Logs: `journalctl -u streamx-dvr`.
 
 - **Updates** are automatic when enabled in the admin Settings, and never start during a recording or within 10 minutes of one. Update by hand with `sudo -u streamx-dvr /opt/streamx-dvr/streamx-dvr update --data-dir /opt/streamx-dvr/data`, or by running `setup.sh` again.
 - **Rollback**: stop the service, `sudo -u streamx-dvr touch /opt/streamx-dvr/data/update.hold`, copy `/opt/streamx-dvr/streamx-dvr.previous` over `/opt/streamx-dvr/streamx-dvr`, start the service. Delete `update.hold` to resume automatic updates.
