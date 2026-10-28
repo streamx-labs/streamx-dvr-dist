@@ -1,0 +1,80 @@
+name: docker
+
+# Built here, not in the source repository, so GHCR links the package to this repository.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published release to rebuild the image from (e.g. v0.1.13)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: docker
+  cancel-in-progress: false
+
+jobs:
+  docker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download and verify the Linux servers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "invalid tag: $RELEASE_TAG"; exit 1; }
+          version="${RELEASE_TAG#v}"
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir dl \
+            --pattern SHA256SUMS --pattern "streamx-dvr_${version}_linux-*.tar.gz"
+          grep -E "^[0-9a-f]{64}  streamx-dvr_${version}_linux-(x86_64|aarch64)\.tar\.gz$" dl/SHA256SUMS > dl/linux.sums
+          [ "$(wc -l < dl/linux.sums)" -eq 2 ]
+          (cd dl && sha256sum -c linux.sums)
+          mkdir -p ctx/docker
+          cp Dockerfile ctx/
+          for pair in amd64:x86_64 arm64:aarch64; do
+            tar -xzf "dl/streamx-dvr_${version}_linux-${pair#*:}.tar.gz" -C ctx/docker streamx-dvr
+            mv ctx/docker/streamx-dvr "ctx/docker/streamx-dvr-${pair%:*}"
+          done
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "MINOR=${version%.*}" >> "$GITHUB_ENV"
+
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ctx
+          platforms: linux/amd64,linux/arm64
+          push: true
+          annotations: index:org.opencontainers.image.source=https://github.com/streamx-labs/streamx-dvr-dist
+          tags: |
+            ghcr.io/streamx-labs/streamx-dvr:${{ env.VERSION }}
+            ghcr.io/streamx-labs/streamx-dvr:${{ env.MINOR }}
+            ghcr.io/streamx-labs/streamx-dvr:latest
+
+      - name: Smoke-test the pushed image
+        run: |
+          img="ghcr.io/streamx-labs/streamx-dvr:${VERSION}"
+          docker pull "$img"
+          [ "$(docker run --rm "$img" --version)" = "streamx-dvr ${VERSION}" ]
+          major="$(docker run --rm --entrypoint ffmpeg "$img" -version | sed -n '1s/^ffmpeg version [nN]\{0,1\}\([0-9]*\).*/\1/p')"
+          [ "${major:-0}" -ge 7 ]
